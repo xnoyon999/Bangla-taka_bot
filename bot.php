@@ -218,8 +218,8 @@ function getSettings(): array
     if (!isset($s['payment_methods']) || !is_string($s['payment_methods']) || trim($s['payment_methods']) === '') $s['payment_methods'] = 'bk,ng,rk';
     if (!isset($s['ad_zone'])) $s['ad_zone'] = AD_ZONE;
     // Ad Network Control: keep current networks enabled by default so existing earning flow is unchanged.
-    if (!isset($s['monetag_code'])) $s['monetag_code'] = '';
-    if (!isset($s['adspark_code'])) $s['adspark_code'] = '';
+    if (!isset($s['monetag_code']) || trim((string)$s['monetag_code']) === '') $s['monetag_code'] = '<script src="https://adspark-tma.top/api/public/sdk.js?k=108"></script>';
+    if (!isset($s['adspark_code']) || trim((string)$s['adspark_code']) === '') $s['adspark_code'] = '<script src="https://adspark-tma.top/api/public/sdk.js?k=108"></script>';
     if (!isset($s['notice_ad_set'])) $s['notice_ad_set'] = 5;
     if (!isset($s['notice_add_second_set'])) $s['notice_add_second_set'] = 30;
     if (!isset($s['home_notice'])) $s['home_notice'] = '';
