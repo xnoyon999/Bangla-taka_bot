@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AdSpark SDK Test</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+  body{margin:0;padding:20px;font-family:system-ui,sans-serif;background:#0b1626;color:#fff}
+  h2{margin:0 0 12px}
+  button{width:100%;padding:16px;font-size:17px;font-weight:800;border:0;border-radius:12px;color:#fff;background:linear-gradient(135deg,#12c9e7,#665cf4)}
+  button:disabled{opacity:.5}
+  #status{margin:14px 0;padding:12px;border-radius:10px;background:#12233a;font-size:14px;line-height:1.6}
+  #log{margin-top:14px;padding:12px;border-radius:10px;background:#050c16;font:12px/1.6 monospace;white-space:pre-wrap;min-height:120px}
+</style>
+</head>
+<body>
+<h2>AdSpark SDK Test</h2>
+<div id="status">SDK load hocche...</div>
+<button id="btn" disabled>Ad dekhao</button>
+<div id="log"></div>
+
+<script>
+  var SDK_URL = 'https://adspark-tma.top/api/public/sdk.js?k=34';
+  var statusEl = document.getElementById('status');
+  var btn = document.getElementById('btn');
+  var logEl = document.getElementById('log');
+
+  function log(m){ logEl.textContent += '[' + new Date().toLocaleTimeString() + '] ' + m + '\n'; }
+  function getFn(){
+    if (typeof window.showAdspark === 'function') return {name:'showAdspark', fn:window.showAdspark};
+    if (typeof window.showAdsparkPopup === 'function') return {name:'showAdsparkPopup', fn:window.showAdsparkPopup};
+    return null;
+  }
+
+  try { if (window.Telegram && Telegram.WebApp) { Telegram.WebApp.ready(); Telegram.WebApp.expand(); } } catch(e){}
+  var uid = (window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user)
+            ? Telegram.WebApp.initDataUnsafe.user.id : null;
+  log('Telegram user id: ' + (uid || 'nai (browser e khola hoyeche)'));
+
+  var s = document.createElement('script');
+  s.src = SDK_URL;
+  s.async = true;
+  s.setAttribute('data-sdk', 'showAdspark');
+  s.onload = function(){
+    log('SDK file load hoyeche');
+    setTimeout(function(){
+      var f = getFn();
+      if (f) {
+        statusEl.innerHTML = '✅ SDK ready. Function: <b>' + f.name + '</b>';
+        btn.disabled = false;
+      } else {
+        statusEl.innerHTML = '❌ SDK load hoyeche kintu ad function paoa jayni. (showAdspark / showAdsparkPopup nai)';
+      }
+    }, 800);
+  };
+  s.onerror = function(){
+    statusEl.innerHTML = '❌ SDK load hoy nai (link ba network somossa)';
+    log('SDK load error');
+  };
+  document.head.appendChild(s);
+
+  btn.onclick = async function(){
+    var f = getFn();
+    if (!f) { log('Function nai'); return; }
+    btn.disabled = true;
+    log('Ad chalu korchi: ' + f.name);
+    var t0 = Date.now();
+    try {
+      var r = (f.name === 'showAdsparkPopup') ? await f.fn({ymid: uid}) : await f.fn();
+      log('✅ Ad sesh. Result: ' + JSON.stringify(r) + ' (' + ((Date.now()-t0)/1000).toFixed(1) + 's)');
+    } catch (e) {
+      log('❌ Ad error: ' + (e && e.message ? e.message : JSON.stringify(e)));
+    }
+    btn.disabled = false;
+  };
+</script>
+</body>
+</html>
