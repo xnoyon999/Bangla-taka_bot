@@ -1,473 +1,111 @@
 <!doctype html>
 <html lang="bn">
 <head>
-
-<!-- FIX V4: Hybrid - Try Iframe, Fallback to Telegram In-App (No Chrome) -->
-
-
-<script>
-(function(){
-  // DIRECT AD MODE: keep the ad inside Telegram's in-app webview/browser.
-  // No custom iframe/modal and no bot-interface flash before the ad.
-  window._origOpen = window.open;
-  window.open = function(url){
-    if(!url || !/^https?:\/\//i.test(String(url))) return null;
-    try{
-      window._lastAdUrl = String(url);
-      window._adNavCount = (window._adNavCount||0) + 1;
-      window._adClickedInside = true;
-      if(window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openLink){
-        window.Telegram.WebApp.openLink(String(url));
-      }else{
-        return window._origOpen ? window._origOpen(String(url), '_blank') : null;
-      }
-    }catch(e){
-      try{
-        if(window._origOpen) return window._origOpen(String(url), '_blank');
-      }catch(_e){}
-    }
-    return {closed:false, close:function(){}};
-  };
-})();
-</script>
-
-
-<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
-
-<meta charset="UTF-8">
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
-<title>BANGLA TAKA BOT</title>
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<link rel="stylesheet" href="style.css?v=24">
-<link rel="stylesheet" href="light-effects.css?v=8">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Ad Test</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-html,body{margin:0;padding:0;width:100%;min-height:100%;background:#071426;color:#fff;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;}
-.topbar{display:none !important;}
-#screen{padding-bottom:115px;padding-top:8px;}
-.bottom-nav{position:fixed;left:14px;right:14px;bottom:12px;height:78px;display:grid;grid-template-columns:repeat(4,1fr);align-items:center;padding:5px;background:linear-gradient(135deg,rgba(16,39,66,.97),rgba(6,20,39,.96));border:1px solid rgba(73,157,201,.30);border-radius:27px;backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);box-shadow:0 14px 40px rgba(0,0,0,.55),inset 0 1px 1px rgba(255,255,255,.08),inset 0 -1px 1px rgba(0,0,0,.3),0 0 25px rgba(0,190,255,.08);z-index:20;overflow:visible;}
-.bottom-nav button{position:relative;height:66px;border:0;outline:none;background:transparent;color:#8999ad;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border-radius:21px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .28s cubic-bezier(.2,.8,.2,1),color .25s ease,background .25s ease,box-shadow .25s ease;}
-.bottom-nav .nav-icon{width:28px;height:28px;display:flex;align-items:center;justify-content:center;}
-.bottom-nav .nav-icon svg{width:25px;height:25px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;}
-.bottom-nav button span{font-size:10px;font-weight:800;}
-.bottom-nav button.active{color:#20ddf7;transform:translateY(-7px);background:linear-gradient(145deg,rgba(16,208,241,.23),rgba(42,89,230,.16));border:1px solid rgba(25,218,246,.25);box-shadow:0 8px 24px rgba(0,211,245,.18),inset 0 1px 1px rgba(255,255,255,.13);}
-.bottom-nav button.active .nav-icon{filter:drop-shadow(0 0 5px rgba(25,225,250,.95));}
-#toast{position:fixed;left:50%;bottom:100px;transform:translateX(-50%);background:#182940;border:1px solid #35506c;padding:12px 17px;border-radius:12px;display:none;z-index:80;max-width:90%;text-align:center;}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,sans-serif;color:#fff;
+       background:radial-gradient(circle at 85% 10%,#103b59 0,transparent 30%),#071326;padding:18px}
+  .top{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+  .logo{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:linear-gradient(135deg,#12c9e7,#665cf4)}
+  .top b{font-size:18px}.top small{display:block;color:#7f95b3;font-size:12px}
+  .card{background:linear-gradient(160deg,#10294a,#0a1a33);border:1px solid #25415f;border-radius:18px;padding:14px;margin-bottom:12px}
+  .name{font-weight:800;font-size:16px}
+  .sub{font-size:11px;color:#7f95b3;word-break:break-all;margin-top:2px}
+  .st{margin:10px 0;font-size:14px;min-height:20px}
+  .row{display:flex;gap:8px;align-items:center}
+  .cnt{font-size:12px;color:#9fb3cc;margin-top:8px}
+  button.go{width:100%;padding:15px;font-size:16px;font-weight:900;border:0;border-radius:14px;color:#fff;
+            background:linear-gradient(135deg,#12c9e7,#665cf4)}
+  button.go:disabled{opacity:.5}
+  #log{margin-top:6px;padding:12px;border-radius:12px;background:#050c16;font:12px/1.6 monospace;white-space:pre-wrap;min-height:120px;color:#b8c8dc}
 </style>
-<style id="force-glow-inline">
-
-/* V4 - FORCED GLOW - VPN + Poro/Lijent always glow, BD kom VPN beshi */
-.vpn-badge {
-  transition: all 0.3s ease !important;
-}
-#vpnBadgeLeft, #vpnBadgeRight, .vpn-badge.left, .vpn-badge.right {
-  border: 1.4px solid rgba(0,255,136,0.45) !important;
-  box-shadow: 0 0 10px rgba(0,255,136,0.35), 0 0 22px rgba(0,255,136,0.15) !important;
-  animation: vpnPulse 2s ease-in-out infinite !important;
-}
-@keyframes vpnPulse {
-  0%,100% { box-shadow: 0 0 8px rgba(0,255,136,0.3), 0 0 18px rgba(0,255,136,0.12); }
-  50% { box-shadow: 0 0 18px rgba(0,255,136,0.85), 0 0 38px rgba(0,255,136,0.4); }
-}
-/* BD kom jolbe */
-#vpnBadgeLeft.vpn-bd, #vpnBadgeRight.vpn-bd, .vpn-badge.vpn-bd {
-  border-color: rgba(0,255,136,0.35) !important;
-  animation: vpnPulseBD 2.5s ease-in-out infinite !important;
-}
-@keyframes vpnPulseBD {
-  0%,100% { box-shadow: 0 0 5px rgba(0,255,136,0.15); }
-  50% { box-shadow: 0 0 10px rgba(0,255,136,0.35); }
-}
-/* VPN/Proxy beshi jolbe - NL, US etc */
-#vpnBadgeLeft.vpn-connected-strong, #vpnBadgeRight.vpn-connected-strong, .vpn-badge.vpn-connected-strong {
-  border: 2px solid #00ff88 !important;
-  background: radial-gradient(circle at 50% 0%, rgba(0,255,136,0.2), rgba(0,255,136,0.04)) !important;
-  animation: vpnPulseStrong 1s ease-in-out infinite !important;
-}
-@keyframes vpnPulseStrong {
-  0%,100% { box-shadow: 0 0 12px rgba(0,255,136,0.6), 0 0 28px rgba(0,255,136,0.3), 0 0 50px rgba(0,255,136,0.15); transform: scale(1); }
-  50% { box-shadow: 0 0 24px rgba(0,255,136,1), 0 0 55px rgba(0,255,136,0.6), 0 0 85px rgba(0,255,136,0.25); transform: scale(1.03); }
-}
-.vpn-badge.vpn-connected-strong .badge-value, #vpnBadgeLeft.vpn-connected-strong .badge-value, #vpnBadgeRight.vpn-connected-strong .badge-value {
-  color: #00ff88 !important; text-shadow: 0 0 12px rgba(0,255,136,0.9) !important; font-weight: 900 !important;
-}
-
-/* Poro / Lijent - ALWAYS premium glow */
-#poroBtn, #lijentBtn, .premium-earn-btn#poroBtn, .premium-earn-btn#lijentBtn {
-  position: relative !important;
-  overflow: visible !important;
-  border: 1.6px solid rgba(30,200,255,0.55) !important;
-}
-#poroBtn {
-  border-color: rgba(30,200,255,0.65) !important;
-  animation: poroGlow 2s ease-in-out infinite !important;
-  box-shadow: 0 0 12px rgba(30,200,255,0.35), 0 0 28px rgba(30,200,255,0.18) !important;
-}
-@keyframes poroGlow {
-  0%,100% { box-shadow: 0 0 10px rgba(30,200,255,0.3), 0 0 22px rgba(30,200,255,0.15); }
-  50% { box-shadow: 0 0 22px rgba(30,200,255,0.9), 0 0 48px rgba(30,200,255,0.45), 0 0 70px rgba(30,140,255,0.2); }
-}
-#lijentBtn {
-  border-color: rgba(255,138,74,0.65) !important;
-  animation: lijentGlow 2.2s ease-in-out infinite !important;
-  box-shadow: 0 0 12px rgba(255,138,74,0.35), 0 0 28px rgba(255,138,74,0.18) !important;
-}
-@keyframes lijentGlow {
-  0%,100% { box-shadow: 0 0 10px rgba(255,138,74,0.3), 0 0 22px rgba(255,138,74,0.15); }
-  50% { box-shadow: 0 0 22px rgba(255,138,74,0.95), 0 0 48px rgba(255,100,0,0.5), 0 0 70px rgba(180,80,255,0.18); }
-}
-
-/* Notice - Maje Boro */
-#middleEarningNotice {
-  width: 94% !important;
-  max-width: 94% !important;
-  margin: 16px auto !important;
-  padding: 12px 18px !important;
-  font-size: 14px !important;
-  font-weight: 900 !important;
-  text-align: center !important;
-  display: flex;
-  align-items: center !important;
-  justify-content: center !important;
-  gap: 10px !important;
-  border-radius: 16px !important;
-  position: relative !important;
-  left: auto !important;
-  right: auto !important;
-  transform: none !important;
-  border: 1.5px solid rgba(255,42,42,0.55) !important;
-  border-left: 5px solid #ff2222 !important;
-  background: linear-gradient(135deg, #1b2a45 0%, #223a5f 100%) !important;
-  box-shadow: 0 6px 20px rgba(0,0,0,0.4) !important;
-  line-height: 1.4 !important;
-}
-@keyframes noticeEntryV4 {
-  0% { opacity: 0; transform: translateY(-18px) scale(0.85); }
-  30% { opacity: 1; transform: translateY(0) scale(1.06); box-shadow: 0 0 28px rgba(255,0,0,0.9), 0 0 60px rgba(255,0,0,0.4); }
-  100% { opacity: 1; transform: translateY(0) scale(1); }
-}
-@keyframes noticeRedV4 { 0%,100% { border-left-color: #ff2222; } 50% { border-left-color: #ff0000; box-shadow: 0 0 24px rgba(255,0,0,0.6); } }
-@keyframes noticeFadeV4 { to { opacity: 0; transform: translateY(-10px) scale(0.9); } }
-#middleEarningNotice.notice-enter { animation: noticeEntryV4 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards, noticeRedV4 0.45s ease 0.6s 3 !important; }
-#middleEarningNotice.notice-exit { animation: noticeFadeV4 0.45s ease forwards !important; opacity: 0 !important; pointer-events: none !important; }
-#middleEarningNotice.hidden-notice { display: none !important; opacity: 0 !important; }
-
-/* Disable when active */
-.premium-earn-btn.earning-active, #poroBtn.earning-active, #lijentBtn.earning-active { animation: none !important; opacity: 0.6 !important; }
-.premium-earn-btn.locked, #poroBtn.locked, #lijentBtn.locked { animation: none !important; opacity: 0.35 !important; }
-
-
-/* ===== Withdraw Payment Method - Premium Color Change + Tok Sound Glow ===== */
-.method-grid { gap: 10px !important; }
-.method {
-  position: relative !important;
-  transition: all 0.28s cubic-bezier(0.34,1.56,0.64,1) !important;
-  overflow: hidden !important;
-  border-width: 1.4px !important;
-}
-.method::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,0.12) 50%, transparent 80%);
-  transform: translateX(-100%);
-  transition: transform 0.6s ease;
-  pointer-events: none;
-}
-.method.selected::after {
-  transform: translateX(100%);
-}
-
-/* Selected - base glow */
-.method.selected {
-  transform: translateY(-2px) scale(1.03) !important;
-  box-shadow: 0 8px 22px rgba(0,0,0,0.35), 0 0 18px var(--pm-glow) !important;
-  border-color: var(--pm-color) !important;
-  background: radial-gradient(circle at 50% 0%, var(--pm-bg), #15253b) !important;
-  color: #fff !important;
-}
-
-/* Bkash - Pink */
-.method.method-bkash { --pm-color: #e2136e; --pm-glow: rgba(226,19,110,0.6); --pm-bg: rgba(226,19,110,0.25); }
-.method.method-bkash.selected { background: linear-gradient(135deg, #e2136e, #a60e4e) !important; border-color: #ff2e89 !important; box-shadow: 0 0 18px rgba(226,19,110,0.8), 0 0 38px rgba(226,19,110,0.4) !important; animation: pmPulsePink 0.9s ease infinite !important; }
-@keyframes pmPulsePink { 0%,100% { box-shadow: 0 0 12px rgba(226,19,110,0.5); } 50% { box-shadow: 0 0 22px rgba(226,19,110,1), 0 0 45px rgba(226,19,110,0.5); } }
-
-/* Nagad - Orange Red */
-.method.method-nagad { --pm-color: #ff6a00; --pm-glow: rgba(255,106,0,0.6); --pm-bg: rgba(255,106,0,0.25); }
-.method.method-nagad.selected { background: linear-gradient(135deg, #ff6a00, #e53d00) !important; border-color: #ff8a2e !important; box-shadow: 0 0 18px rgba(255,106,0,0.8), 0 0 38px rgba(255,61,0,0.4) !important; animation: pmPulseOrange 0.9s ease infinite !important; }
-@keyframes pmPulseOrange { 0%,100% { box-shadow: 0 0 12px rgba(255,106,0,0.5); } 50% { box-shadow: 0 0 22px rgba(255,106,0,1), 0 0 45px rgba(255,61,0,0.5); } }
-
-/* Rocket - Purple */
-.method.method-rocket { --pm-color: #8a2be2; --pm-glow: rgba(138,43,226,0.6); --pm-bg: rgba(138,43,226,0.25); }
-.method.method-rocket.selected { background: linear-gradient(135deg, #8a2be2, #5d1a9e) !important; border-color: #a85cff !important; box-shadow: 0 0 18px rgba(138,43,226,0.8), 0 0 38px rgba(138,43,226,0.4) !important; animation: pmPulsePurple 0.9s ease infinite !important; }
-@keyframes pmPulsePurple { 0%,100% { box-shadow: 0 0 12px rgba(138,43,226,0.5); } 50% { box-shadow: 0 0 22px rgba(138,43,226,1), 0 0 45px rgba(138,43,226,0.5); } }
-
-/* Binance - Yellow */
-.method.method-binance { --pm-color: #f3ba2f; --pm-glow: rgba(243,186,47,0.6); --pm-bg: rgba(243,186,47,0.25); }
-.method.method-binance.selected { background: linear-gradient(135deg, #f3ba2f, #d8a01c) !important; color: #000 !important; font-weight: 900 !important; border-color: #ffdf6e !important; box-shadow: 0 0 18px rgba(243,186,47,0.9), 0 0 38px rgba(243,186,47,0.5) !important; animation: pmPulseYellow 0.9s ease infinite !important; }
-.method.method-binance.selected::after { background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,0.35) 50%, transparent 80%); }
-@keyframes pmPulseYellow { 0%,100% { box-shadow: 0 0 12px rgba(243,186,47,0.5); } 50% { box-shadow: 0 0 22px rgba(243,186,47,1), 0 0 45px rgba(243,186,47,0.6); } }
-
-/* Mobile Recharge - Green */
-.method.method-recharge { --pm-color: #00c853; --pm-glow: rgba(0,200,83,0.6); --pm-bg: rgba(0,200,83,0.25); }
-.method.method-recharge.selected { background: linear-gradient(135deg, #00c853, #009624) !important; border-color: #2eff7a !important; box-shadow: 0 0 18px rgba(0,200,83,0.8), 0 0 38px rgba(0,200,83,0.4) !important; animation: pmPulseGreen 0.9s ease infinite !important; }
-@keyframes pmPulseGreen { 0%,100% { box-shadow: 0 0 12px rgba(0,200,83,0.5); } 50% { box-shadow: 0 0 22px rgba(0,200,83,1), 0 0 45px rgba(0,200,83,0.5); } }
-
-/* Wallet input placeholder glow */
-#account.wallet-glow, #amount.wallet-glow { border-color: var(--pm-color, #0bc6e8) !important; box-shadow: 0 0 12px var(--pm-glow, rgba(11,198,230,0.3)) !important; }
-
-
-#noticeFloatingTimer{position:fixed;top:12px;left:50%;transform:translateX(-50%);background:linear-gradient(90deg,#0a172b,#10263f);border:1.5px solid #00ff88;color:#00ff88;padding:8px 16px;border-radius:20px;font-weight:900;font-size:14px;z-index:9999999;box-shadow:0 4px 20px rgba(0,255,136,0.3);display:flex;align-items:center;gap:6px;}
-#ad-timer{font-weight:900;color:#00ff88;min-width:20px;display:inline-block;text-align:center;}
-#ad-timer-wrap{animation:timerPulse 1s ease-in-out infinite;}
-@keyframes timerPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
-</style>
-
-<style id="vpn-realtime-fix">
-@keyframes spin { to { transform: rotate(360deg); } }
-.vpn-badge.vpn-off {
-  border: 1.4px solid rgba(255,60,60,0.5) !important;
-  box-shadow: 0 0 8px rgba(255,60,60,0.25) !important;
-  animation: vpnOffPulse 2.2s ease-in-out infinite !important;
-}
-@keyframes vpnOffPulse {
-  0%,100% { box-shadow: 0 0 6px rgba(255,60,60,0.2); }
-  50% { box-shadow: 0 0 14px rgba(255,60,60,0.45); }
-}
-.vpn-badge .badge-value {
-  transition: all 0.35s ease;
-}
-#vpnLeftValue.vpn-checking {
-  color: #ffcc00 !important;
-}
-</style>
-
 </head>
 <body>
-<div class="app">
-    <main id="screen"><div style="padding:40px;text-align:center;">Loading...</div></main>
-    <nav class="bottom-nav">
-        <button type="button" data-tab="home" class="active"><div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5"/><path d="M5.5 9.5V21h13V9.5"/><path d="M9 21v-6h5v6"/></svg></div><span>Home</span></button>
-        <button type="button" data-tab="tasks"><div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M6 4h12v16H6z"/><path d="M9 8h6"/><path d="M9 12h6"/><path d="M9 16h4"/></svg></div><span>Earning</span></button>
-        <button type="button" data-tab="top"><div class="nav-icon"><svg viewBox="0 0 24 24"><path d="M8 21h8"/><path d="M9 17h6"/><path d="M6 4h12l-1 8a5 5 0 0 1-10 0z"/><path d="M6 7H3v2a4 4 0 0 0 4 4"/><path d="M18 7h3v2a4 4 0 0 1-4 4"/></svg></div><span>Top</span></button>
-        <button type="button" data-tab="profile"><div class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c.8-4 3.4-6 8-6s7.2 2 8 6"/></svg></div><span>Profile</span></button>
-    </nav>
-</div>
-<div id="toast"></div>
-<div id="notice" class="modal hidden" style="position:fixed;inset:0;background:#0009;display:none;place-items:center;z-index:50;padding:20px;"></div>
+<div class="top"><div class="logo">📢</div><div><b>Ad Test Bot</b><small>প্রতিটা SDK আলাদা করে টেস্ট করুন</small></div></div>
+<div id="cards"></div>
+<div style="font-size:12px;color:#7f95b3;margin:6px 2px;">LOG</div>
+<div id="log"></div>
+
 <script>
-(function(){
-  let mode = 'impression';
-  try{ mode = localStorage.getItem('botSetting_current') || 'impression'; }catch(e){}
-  window._currentAdMode = mode;
-  const file = mode === 'view' ? 'app_warning.js' : 'app.js';
-  console.log('BOT MODE:', mode, 'FILE:', file);
-  const s = document.createElement('script');
-  s.src = file + '?v=' + Date.now();
-  s.charset='utf-8';
-  document.head.appendChild(s);
-  
-  // AUTO RELOAD WHEN FILE CHANGES - Check every 3 seconds
-  let lastFileContent = '';
-  let checkInterval = setInterval(async ()=>{
-    try{
-      const resp = await fetch(file + '?check=' + Date.now(), {cache: 'no-store'});
-      const text = await resp.text();
-      if(lastFileContent === ''){
-        lastFileContent = text.substring(0,1000);
-      } else {
-        const currentStart = text.substring(0,1000);
-        if(currentStart !== lastFileContent){
-          console.log('File changed, auto reload');
-          clearInterval(checkInterval);
-          location.reload();
-        }
-      }
-    }catch(e){}
-  }, 3000);
-  
-  // Also reload when bot setting changes from other tab
-  window.addEventListener('storage', (e)=>{
-    if(e.key === 'botSetting_current'){
-      setTimeout(()=>{ location.reload(); }, 500);
-    }
-    if(e.key === 'custom_warning_msg'){
-      console.log('Warning message changed');
-    }
-  });
-})();
-</script>
-<script src="light-effects.js?v=8" charset="utf-8"></script>
-<!-- Lazy ad SDKs - loaded by optimize script after 2.5s -->
-<script id="force-glow-inline-js">
+  // ---- SDK list: ekhane lik ba nam bodlano jay ----
+  var SDKS = [
+    { id:'a108', title:'AdSpark  (k=108)', src:'https://adspark-tma.top/api/public/sdk.js?k=108', type:'adspark' }
+  ];
 
-// V4 - FORCE GLOW + FAST
-(function(){
-  function applyGlow(){
-    try{
-      const lb = document.getElementById('vpnBadgeLeft');
-      const rb = document.getElementById('vpnBadgeRight');
-      const rv = document.getElementById('vpnRightValue');
-      const txt = (rv?.textContent||'').toUpperCase();
-      const isBD = txt.includes('BD');
-      [lb,rb].forEach(el=>{
-        if(!el) return;
-        el.classList.remove('vpn-bd','vpn-connected-strong');
-        if(isBD){ el.classList.add('vpn-bd'); }
-        else { el.classList.add('vpn-connected-strong'); }
-        // Force inline glow if CSS not loaded
-        if(!el.style.boxShadow || el.style.boxShadow===''){
-          if(isBD){ el.style.boxShadow='0 0 8px rgba(0,255,136,0.3)'; }
-          else { el.style.boxShadow='0 0 18px rgba(0,255,136,0.8), 0 0 35px rgba(0,255,136,0.4)'; el.style.border='2px solid #00ff88'; }
-        }
-      });
-      // Poro Lijent force
-      const p=document.getElementById('poroBtn'), l=document.getElementById('lijentBtn');
-      if(p && !p.style.animation.includes('poroGlow')){ /* let CSS handle */ }
-    }catch(e){}
+  var logEl=document.getElementById('log'), cardsEl=document.getElementById('cards');
+  function log(m){ logEl.textContent += '['+new Date().toLocaleTimeString()+'] '+m+'\n'; logEl.scrollTop=logEl.scrollHeight; }
+  try{ if(window.Telegram&&Telegram.WebApp){ Telegram.WebApp.ready(); Telegram.WebApp.expand(); } }catch(e){}
+  var uid=(window.Telegram&&Telegram.WebApp&&Telegram.WebApp.initDataUnsafe&&Telegram.WebApp.initDataUnsafe.user)?Telegram.WebApp.initDataUnsafe.user.id:null;
+  log('Telegram user id: '+(uid||'nai'));
+
+  function errText(e){
+    if(e===undefined||e===null) return 'unknown';
+    if(typeof e==='string') return e;
+    var parts=[]; if(e.name) parts.push(e.name); if(e.message) parts.push(e.message);
+    try{ var j=JSON.stringify(e); if(j && j!=='{}') parts.push(j); }catch(_){}
+    return parts.join(' | ')||String(e);
   }
 
-  function fixNotice(){
-    const n=document.getElementById('middleEarningNotice');
-    if(!n) return;
-    n.style.width='94%'; n.style.margin='16px auto'; n.style.textAlign='center';
-    if(n.textContent.includes('Notun Notice') && !n.classList.contains('notice-enter') && n.style.display!=='none'){
-      n.classList.add('notice-enter');
-      try{ if(navigator.vibrate) navigator.vibrate([80,40,80]); }catch(e){}
-      // beep
-      try{
-        const ctx=new (window.AudioContext||window.webkitAudioContext)();
-        const o=ctx.createOscillator(); const g=ctx.createGain();
-        o.frequency.value=880; g.gain.value=0.2; o.connect(g); g.connect(ctx.destination); o.start(); setTimeout(()=>o.stop(),300);
-      }catch(e){}
-      setTimeout(()=>{
-        n.classList.remove('notice-enter'); n.classList.add('notice-exit');
-        setTimeout(()=>{ n.classList.add('hidden-notice'); n.classList.add('hidden-notice'); n.style.display='none'; n.style.opacity='0'; n.classList.remove('notice-exit','notice-enter'); },450);
-      },5000);
-    }
+  function resetGlobals(){
+    ['showAdspark','showAdsparkPopup'].forEach(function(k){ try{ delete window[k]; }catch(e){ window[k]=undefined; } });
+    SDKS.forEach(function(s){ if(s.sdk){ try{ delete window[s.sdk]; }catch(e){ window[s.sdk]=undefined; } } });
   }
-
-  function start(){
-    // patch updateVpnBadges
-    const orig=window.updateVpnBadges;
-    if(orig && !orig._patchedV4){
-      window.updateVpnBadges=async function(){ const r=await orig.apply(this,arguments); setTimeout(applyGlow,100); return r; };
-      window.updateVpnBadges._patchedV4=true;
-    }
-    setInterval(applyGlow,1200);
-    setInterval(fixNotice,1000);
-    applyGlow(); fixNotice();
+  function findFn(s){
+    if(s.type==='zone') return typeof window[s.sdk]==='function' ? {name:s.sdk, fn:window[s.sdk]} : null;
+    if(typeof window.showAdspark==='function') return {name:'showAdspark', fn:window.showAdspark};
+    if(typeof window.showAdsparkPopup==='function') return {name:'showAdsparkPopup', fn:window.showAdsparkPopup};
+    return null;
   }
-  setTimeout(start,800);
-  setTimeout(start,2000);
-  window.addEventListener('load',()=>setTimeout(start,1000));
-})();
-
-
-// ===== Withdraw Premium Patch =====
-(function(){
-  function playTokSound(){
-    try{
-      const ctx = new (window.AudioContext||window.webkitAudioContext)();
-      // Tok tok - 2 quick clicks
-      [0, 120].forEach(delay=>{
-        setTimeout(()=>{
-          const o = ctx.createOscillator();
-          const g = ctx.createGain();
-          o.type='sine';
-          o.frequency.setValueAtTime(1200, ctx.currentTime);
-          o.frequency.exponentialRampToValueAtTime(300, ctx.currentTime+0.08);
-          g.gain.setValueAtTime(0.22, ctx.currentTime);
-          g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.12);
-          o.connect(g); g.connect(ctx.destination);
-          o.start(); o.stop(ctx.currentTime+0.13);
-        }, delay);
-      });
-      if(navigator.vibrate) navigator.vibrate(30);
-    }catch(e){}
-  }
-
-  function normalizeMethod(txt){
-    const t = String(txt||'').toLowerCase().trim();
-    if(t.includes('bkash')||t.includes('bikas')||t.includes('bkas')) return 'bkash';
-    if(t.includes('nagad')||t.includes('ng')) return 'nagad';
-    if(t.includes('rocket')||t.includes('rk')) return 'rocket';
-    if(t.includes('binance')||t.includes('bc')||t.includes('usdt')) return 'binance';
-    if(t.includes('recharge')||t.includes('mobile')||t.includes('rc')) return 'recharge';
-    return t;
-  }
-
-  function applyMethodClass(){
-    const methods = document.querySelectorAll('.method');
-    methods.forEach(m=>{
-      const name = normalizeMethod(m.textContent);
-      m.classList.remove('method-bkash','method-nagad','method-rocket','method-binance','method-recharge');
-      if(name==='bkash') m.classList.add('method-bkash');
-      else if(name==='nagad') m.classList.add('method-nagad');
-      else if(name==='rocket') m.classList.add('method-rocket');
-      else if(name==='binance') m.classList.add('method-binance');
-      else if(name==='recharge') m.classList.add('method-recharge');
+  function loadSdk(s){
+    return new Promise(function(resolve,reject){
+      resetGlobals();
+      var el=document.createElement('script');
+      el.src = s.src + (s.src.indexOf('?')>-1?'&':'?') + '_t=' + Date.now();
+      el.async=true;
+      if(s.type==='zone'){ el.setAttribute('data-zone',s.zone); el.setAttribute('data-sdk',s.sdk); }
+      else { el.setAttribute('data-sdk','showAdspark'); }
+      el.onload=function(){ setTimeout(function(){ resolve(findFn(s)); },800); };
+      el.onerror=function(){ reject(new Error('SDK file load hoy nai')); };
+      document.head.appendChild(el);
     });
   }
 
-  function updatePlaceholderForMethod(methodName){
-    const accInput = document.getElementById('account');
-    const amtInput = document.getElementById('amount');
-    if(!accInput) return;
-    const m = normalizeMethod(methodName);
-    accInput.classList.remove('wallet-glow');
-    amtInput?.classList.remove('wallet-glow');
-    // reset style vars
-    void accInput.offsetWidth;
-    if(m==='binance'){
-      accInput.placeholder = '1234... / Binance ID';
-      // show 1234.. style
-      accInput.value = accInput.value; // keep
-      accInput.style.setProperty('--pm-color','#f3ba2f');
-      accInput.style.setProperty('--pm-glow','rgba(243,186,47,0.4)');
-    } else {
-      accInput.placeholder = '01XXXXXXXXX';
-      const colorMap = {bkash:'#e2136e', nagad:'#ff6a00', rocket:'#8a2be2', recharge:'#00c853'};
-      const c = colorMap[m] || '#0bc6e8';
-      accInput.style.setProperty('--pm-color',c);
+  SDKS.forEach(function(s){
+    s.ok=0; s.fail=0;
+    var d=document.createElement('div'); d.className='card';
+    d.innerHTML='<div class="name">'+s.title+'</div><div class="sub">'+s.src+'</div>'+
+      '<div class="st" id="st_'+s.id+'">Ready</div>'+
+      '<button class="go" id="bt_'+s.id+'">▶ Ad Dekhun</button>'+
+      '<div class="cnt" id="ct_'+s.id+'">Success: 0 &nbsp;|&nbsp; Fail: 0</div>';
+    cardsEl.appendChild(d);
+    document.getElementById('bt_'+s.id).onclick=function(){ runTest(s); };
+  });
+
+  async function runTest(s){
+    var btn=document.getElementById('bt_'+s.id), st=document.getElementById('st_'+s.id), ct=document.getElementById('ct_'+s.id);
+    SDKS.forEach(function(x){ document.getElementById('bt_'+x.id).disabled=true; });
+    st.textContent='SDK load hocche...';
+    log('--- '+s.title+' ---');
+    try{
+      var f=await loadSdk(s);
+      if(!f){ throw new Error('SDK load hoyeche kintu ad function paoa jayni'); }
+      log('Function pawa gelo: '+f.name);
+      st.textContent='Ad chalu hocche...';
+      var t0=Date.now();
+      var r=(f.name==='showAdsparkPopup') ? await f.fn({ymid:uid}) : await f.fn();
+      s.ok++; st.textContent='✅ Ad sesh ('+((Date.now()-t0)/1000).toFixed(1)+'s)';
+      log('✅ Success. Result: '+JSON.stringify(r));
+    }catch(e){
+      s.fail++; st.textContent='❌ '+errText(e);
+      log('❌ Error: '+errText(e));
     }
-    accInput.classList.add('wallet-glow');
-    if(amtInput){ amtInput.classList.add('wallet-glow'); amtInput.placeholder = m==='binance' ? 'Amount (USDT)' : 'Amount (TK)'; }
-    setTimeout(()=>{ accInput.classList.remove('wallet-glow'); amtInput?.classList.remove('wallet-glow'); }, 1200);
+    ct.innerHTML='Success: '+s.ok+' &nbsp;|&nbsp; Fail: '+s.fail;
+    SDKS.forEach(function(x){ document.getElementById('bt_'+x.id).disabled=false; });
   }
-
-  function hookSelectMethod(){
-    const orig = window.selectMethod;
-    if(!orig || orig._patchedWithdraw) return;
-    window.selectMethod = function(m){
-      const res = orig.apply(this, arguments);
-      try{
-        applyMethodClass();
-        playTokSound();
-        updatePlaceholderForMethod(m);
-      }catch(e){}
-      return res;
-    };
-    window.selectMethod._patchedWithdraw = true;
-  }
-
-  function startWithdrawPatch(){
-    hookSelectMethod();
-    applyMethodClass();
-    // Observe method grid for dynamic adds
-    const grid = document.querySelector('.method-grid');
-    if(grid){
-      const obs = new MutationObserver(()=>{ applyMethodClass(); });
-      obs.observe(grid, {childList:true});
-    }
-  }
-
-  setTimeout(startWithdrawPatch, 1000);
-  setTimeout(startWithdrawPatch, 2500);
-  setInterval(startWithdrawPatch, 4000);
-})();
-
 </script>
 </body>
 </html>
