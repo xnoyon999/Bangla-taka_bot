@@ -8,80 +8,106 @@
 <style>
   *{box-sizing:border-box}
   body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,sans-serif;color:#fff;
-       background:radial-gradient(circle at 85% 10%,#103b59 0,transparent 30%),#071326;padding:20px}
-  .top{display:flex;align-items:center;gap:10px;margin-bottom:18px}
-  .logo{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:22px;
-        background:linear-gradient(135deg,#12c9e7,#665cf4)}
+       background:radial-gradient(circle at 85% 10%,#103b59 0,transparent 30%),#071326;padding:18px}
+  .top{display:flex;align-items:center;gap:10px;margin-bottom:16px}
+  .logo{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:22px;background:linear-gradient(135deg,#12c9e7,#665cf4)}
   .top b{font-size:18px}.top small{display:block;color:#7f95b3;font-size:12px}
-  .card{background:linear-gradient(160deg,#10294a,#0a1a33);border:1px solid #25415f;border-radius:18px;padding:18px;margin-bottom:14px}
-  .label{font-size:12px;letter-spacing:1px;color:#7a8ca8;font-weight:700}
-  #status{margin-top:8px;font-size:15px;line-height:1.5}
-  .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
-  .stat{background:#0e2038;border:1px solid #1d3048;border-radius:14px;padding:12px;text-align:center}
-  .stat b{display:block;font-size:24px;margin-top:4px}
-  #btn{width:100%;padding:18px;font-size:18px;font-weight:900;border:0;border-radius:16px;color:#fff;
-       background:linear-gradient(135deg,#12c9e7,#665cf4);box-shadow:0 0 22px rgba(18,201,231,.35)}
-  #btn:disabled{opacity:.45;box-shadow:none}
-  #log{margin-top:14px;padding:12px;border-radius:12px;background:#050c16;font:12px/1.6 monospace;
-       white-space:pre-wrap;min-height:110px;color:#b8c8dc}
+  .card{background:linear-gradient(160deg,#10294a,#0a1a33);border:1px solid #25415f;border-radius:18px;padding:14px;margin-bottom:12px}
+  .name{font-weight:800;font-size:16px}
+  .sub{font-size:11px;color:#7f95b3;word-break:break-all;margin-top:2px}
+  .st{margin:10px 0;font-size:14px;min-height:20px}
+  .row{display:flex;gap:8px;align-items:center}
+  .cnt{font-size:12px;color:#9fb3cc;margin-top:8px}
+  button.go{width:100%;padding:15px;font-size:16px;font-weight:900;border:0;border-radius:14px;color:#fff;
+            background:linear-gradient(135deg,#12c9e7,#665cf4)}
+  button.go:disabled{opacity:.5}
+  #log{margin-top:6px;padding:12px;border-radius:12px;background:#050c16;font:12px/1.6 monospace;white-space:pre-wrap;min-height:120px;color:#b8c8dc}
 </style>
 </head>
 <body>
-<div class="top"><div class="logo">📢</div><div><b>Ad Test Bot</b><small>SDK কাজ করে কিনা দেখুন</small></div></div>
-
-<div class="card"><div class="label">SDK STATUS</div><div id="status">SDK load hocche...</div></div>
-
-<div class="stats">
-  <div class="stat"><div class="label">AD SUCCESS</div><b id="okCount">0</b></div>
-  <div class="stat"><div class="label">AD FAIL</div><b id="failCount">0</b></div>
-</div>
-
-<button id="btn" disabled>▶ Ad Dekhun</button>
+<div class="top"><div class="logo">📢</div><div><b>Ad Test Bot</b><small>প্রতিটা SDK আলাদা করে টেস্ট করুন</small></div></div>
+<div id="cards"></div>
+<div style="font-size:12px;color:#7f95b3;margin:6px 2px;">LOG</div>
 <div id="log"></div>
 
 <script>
-  var SDK_URL = 'https://adspark-tma.top/api/public/sdk.js?k=34';
+  // ---- SDK list: ekhane lik ba nam bodlano jay ----
+  var SDKS = [
+    { id:'a64', title:'AdSpark  (k=64)', src:'https://adspark-tma.top/api/public/sdk.js?k=64', type:'adspark' },
+    { id:'a34', title:'AdSpark  (k=34)', src:'https://adspark-tma.top/api/public/sdk.js?k=34', type:'adspark' },
+    { id:'mtg', title:'libtl.com  (zone 10483352)', src:'https://libtl.com/sdk.js', type:'zone', zone:'10483352', sdk:'show_10483352' }
+  ];
 
-  var statusEl=document.getElementById('status'), btn=document.getElementById('btn'), logEl=document.getElementById('log');
-  var okEl=document.getElementById('okCount'), failEl=document.getElementById('failCount'), ok=0, fail=0;
+  var logEl=document.getElementById('log'), cardsEl=document.getElementById('cards');
   function log(m){ logEl.textContent += '['+new Date().toLocaleTimeString()+'] '+m+'\n'; logEl.scrollTop=logEl.scrollHeight; }
-  function getFn(){
-    if(typeof window.showAdspark==='function') return {name:'showAdspark',fn:window.showAdspark};
-    if(typeof window.showAdsparkPopup==='function') return {name:'showAdsparkPopup',fn:window.showAdsparkPopup};
-    return null;
-  }
   try{ if(window.Telegram&&Telegram.WebApp){ Telegram.WebApp.ready(); Telegram.WebApp.expand(); } }catch(e){}
   var uid=(window.Telegram&&Telegram.WebApp&&Telegram.WebApp.initDataUnsafe&&Telegram.WebApp.initDataUnsafe.user)?Telegram.WebApp.initDataUnsafe.user.id:null;
-  log('Telegram user id: '+(uid||'nai (browser e khola)'));
+  log('Telegram user id: '+(uid||'nai'));
 
-  var s=document.createElement('script');
-  s.src=SDK_URL; s.async=true; s.setAttribute('data-sdk','showAdspark');
-  s.onload=function(){
-    log('SDK file load hoyeche');
-    setTimeout(function(){
-      var f=getFn();
-      if(f){ statusEl.innerHTML='✅ SDK ready (<b>'+f.name+'</b>)'; btn.disabled=false; }
-      else{ statusEl.innerHTML='❌ SDK load hoyeche kintu ad function paoa jayni'; }
-    },800);
-  };
-  s.onerror=function(){ statusEl.innerHTML='❌ SDK load hoy nai (link ba network somossa)'; log('SDK load error'); };
-  document.head.appendChild(s);
+  function errText(e){
+    if(e===undefined||e===null) return 'unknown';
+    if(typeof e==='string') return e;
+    var parts=[]; if(e.name) parts.push(e.name); if(e.message) parts.push(e.message);
+    try{ var j=JSON.stringify(e); if(j && j!=='{}') parts.push(j); }catch(_){}
+    return parts.join(' | ')||String(e);
+  }
 
-  btn.onclick=async function(){
-    var f=getFn(); if(!f){ log('Function nai'); return; }
-    btn.disabled=true; btn.textContent='Ad chalu hocche...';
-    var t0=Date.now();
+  function resetGlobals(){
+    ['showAdspark','showAdsparkPopup'].forEach(function(k){ try{ delete window[k]; }catch(e){ window[k]=undefined; } });
+    SDKS.forEach(function(s){ if(s.sdk){ try{ delete window[s.sdk]; }catch(e){ window[s.sdk]=undefined; } } });
+  }
+  function findFn(s){
+    if(s.type==='zone') return typeof window[s.sdk]==='function' ? {name:s.sdk, fn:window[s.sdk]} : null;
+    if(typeof window.showAdspark==='function') return {name:'showAdspark', fn:window.showAdspark};
+    if(typeof window.showAdsparkPopup==='function') return {name:'showAdsparkPopup', fn:window.showAdsparkPopup};
+    return null;
+  }
+  function loadSdk(s){
+    return new Promise(function(resolve,reject){
+      resetGlobals();
+      var el=document.createElement('script');
+      el.src = s.src + (s.src.indexOf('?')>-1?'&':'?') + '_t=' + Date.now();
+      el.async=true;
+      if(s.type==='zone'){ el.setAttribute('data-zone',s.zone); el.setAttribute('data-sdk',s.sdk); }
+      else { el.setAttribute('data-sdk','showAdspark'); }
+      el.onload=function(){ setTimeout(function(){ resolve(findFn(s)); },800); };
+      el.onerror=function(){ reject(new Error('SDK file load hoy nai')); };
+      document.head.appendChild(el);
+    });
+  }
+
+  SDKS.forEach(function(s){
+    s.ok=0; s.fail=0;
+    var d=document.createElement('div'); d.className='card';
+    d.innerHTML='<div class="name">'+s.title+'</div><div class="sub">'+s.src+'</div>'+
+      '<div class="st" id="st_'+s.id+'">Ready</div>'+
+      '<button class="go" id="bt_'+s.id+'">▶ Ad Dekhun</button>'+
+      '<div class="cnt" id="ct_'+s.id+'">Success: 0 &nbsp;|&nbsp; Fail: 0</div>';
+    cardsEl.appendChild(d);
+    document.getElementById('bt_'+s.id).onclick=function(){ runTest(s); };
+  });
+
+  async function runTest(s){
+    var btn=document.getElementById('bt_'+s.id), st=document.getElementById('st_'+s.id), ct=document.getElementById('ct_'+s.id);
+    SDKS.forEach(function(x){ document.getElementById('bt_'+x.id).disabled=true; });
+    st.textContent='SDK load hocche...';
+    log('--- '+s.title+' ---');
     try{
-      var r=(f.name==='showAdsparkPopup')?await f.fn({ymid:uid}):await f.fn();
-      ok++; okEl.textContent=ok;
-      log('✅ Ad sesh. Result: '+JSON.stringify(r)+' ('+((Date.now()-t0)/1000).toFixed(1)+'s)');
-      if(Telegram&&Telegram.WebApp&&Telegram.WebApp.HapticFeedback) Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+      var f=await loadSdk(s);
+      if(!f){ throw new Error('SDK load hoyeche kintu ad function paoa jayni'); }
+      log('Function pawa gelo: '+f.name);
+      st.textContent='Ad chalu hocche...';
+      var t0=Date.now();
+      var r=(f.name==='showAdsparkPopup') ? await f.fn({ymid:uid}) : await f.fn();
+      s.ok++; st.textContent='✅ Ad sesh ('+((Date.now()-t0)/1000).toFixed(1)+'s)';
+      log('✅ Success. Result: '+JSON.stringify(r));
     }catch(e){
-      fail++; failEl.textContent=fail;
-      log('❌ Ad error: '+(e&&e.message?e.message:JSON.stringify(e)));
+      s.fail++; st.textContent='❌ '+errText(e);
+      log('❌ Error: '+errText(e));
     }
-    btn.disabled=false; btn.textContent='▶ Ad Dekhun';
-  };
+    ct.innerHTML='Success: '+s.ok+' &nbsp;|&nbsp; Fail: '+s.fail;
+    SDKS.forEach(function(x){ document.getElementById('bt_'+x.id).disabled=false; });
+  }
 </script>
 </body>
 </html>
