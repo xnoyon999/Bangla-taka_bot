@@ -1,0 +1,160 @@
+
+/* V4 - FORCED GLOW - VPN + Poro/Lijent always glow, BD kom VPN beshi */
+.vpn-badge {
+  transition: all 0.3s ease !important;
+}
+#vpnBadgeLeft, #vpnBadgeRight, .vpn-badge.left, .vpn-badge.right {
+  border: 1.4px solid rgba(0,255,136,0.45) !important;
+  box-shadow: 0 0 10px rgba(0,255,136,0.35), 0 0 22px rgba(0,255,136,0.15) !important;
+  animation: vpnPulse 2s ease-in-out infinite !important;
+}
+@keyframes vpnPulse {
+  0%,100% { box-shadow: 0 0 8px rgba(0,255,136,0.3), 0 0 18px rgba(0,255,136,0.12); }
+  50% { box-shadow: 0 0 18px rgba(0,255,136,0.85), 0 0 38px rgba(0,255,136,0.4); }
+}
+/* BD kom jolbe */
+#vpnBadgeLeft.vpn-bd, #vpnBadgeRight.vpn-bd, .vpn-badge.vpn-bd {
+  border-color: rgba(0,255,136,0.35) !important;
+  animation: vpnPulseBD 2.5s ease-in-out infinite !important;
+}
+@keyframes vpnPulseBD {
+  0%,100% { box-shadow: 0 0 5px rgba(0,255,136,0.15); }
+  50% { box-shadow: 0 0 10px rgba(0,255,136,0.35); }
+}
+/* VPN/Proxy beshi jolbe - NL, US etc */
+#vpnBadgeLeft.vpn-connected-strong, #vpnBadgeRight.vpn-connected-strong, .vpn-badge.vpn-connected-strong {
+  border: 2px solid #00ff88 !important;
+  background: radial-gradient(circle at 50% 0%, rgba(0,255,136,0.2), rgba(0,255,136,0.04)) !important;
+  animation: vpnPulseStrong 1s ease-in-out infinite !important;
+}
+@keyframes vpnPulseStrong {
+  0%,100% { box-shadow: 0 0 12px rgba(0,255,136,0.6), 0 0 28px rgba(0,255,136,0.3), 0 0 50px rgba(0,255,136,0.15); transform: scale(1); }
+  50% { box-shadow: 0 0 24px rgba(0,255,136,1), 0 0 55px rgba(0,255,136,0.6), 0 0 85px rgba(0,255,136,0.25); transform: scale(1.03); }
+}
+.vpn-badge.vpn-connected-strong .badge-value, #vpnBadgeLeft.vpn-connected-strong .badge-value, #vpnBadgeRight.vpn-connected-strong .badge-value {
+  color: #00ff88 !important; text-shadow: 0 0 12px rgba(0,255,136,0.9) !important; font-weight: 900 !important;
+}
+
+/* Poro / Lijent - ALWAYS premium glow */
+#poroBtn, #lijentBtn, .premium-earn-btn#poroBtn, .premium-earn-btn#lijentBtn {
+  position: relative !important;
+  overflow: visible !important;
+  border: 1.6px solid rgba(30,200,255,0.55) !important;
+}
+#poroBtn {
+  border-color: rgba(30,200,255,0.65) !important;
+  animation: poroGlow 2s ease-in-out infinite !important;
+  box-shadow: 0 0 12px rgba(30,200,255,0.35), 0 0 28px rgba(30,200,255,0.18) !important;
+}
+@keyframes poroGlow {
+  0%,100% { box-shadow: 0 0 10px rgba(30,200,255,0.3), 0 0 22px rgba(30,200,255,0.15); }
+  50% { box-shadow: 0 0 22px rgba(30,200,255,0.9), 0 0 48px rgba(30,200,255,0.45), 0 0 70px rgba(30,140,255,0.2); }
+}
+#lijentBtn {
+  border-color: rgba(255,138,74,0.65) !important;
+  animation: lijentGlow 2.2s ease-in-out infinite !important;
+  box-shadow: 0 0 12px rgba(255,138,74,0.35), 0 0 28px rgba(255,138,74,0.18) !important;
+}
+@keyframes lijentGlow {
+  0%,100% { box-shadow: 0 0 10px rgba(255,138,74,0.3), 0 0 22px rgba(255,138,74,0.15); }
+  50% { box-shadow: 0 0 22px rgba(255,138,74,0.95), 0 0 48px rgba(255,100,0,0.5), 0 0 70px rgba(180,80,255,0.18); }
+}
+
+/* Notice - Maje Boro */
+#middleEarningNotice {
+  width: 94% !important;
+  max-width: 94% !important;
+  margin: 16px auto !important;
+  padding: 12px 18px !important;
+  font-size: 14px !important;
+  font-weight: 900 !important;
+  text-align: center !important;
+  display: flex;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  border-radius: 16px !important;
+  position: relative !important;
+  left: auto !important;
+  right: auto !important;
+  transform: none !important;
+  border: 1.5px solid rgba(255,42,42,0.55) !important;
+  border-left: 5px solid #ff2222 !important;
+  background: linear-gradient(135deg, #1b2a45 0%, #223a5f 100%) !important;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.4) !important;
+  line-height: 1.4 !important;
+}
+@keyframes noticeEntryV4 {
+  0% { opacity: 0; transform: translateY(-18px) scale(0.85); }
+  30% { opacity: 1; transform: translateY(0) scale(1.06); box-shadow: 0 0 28px rgba(255,0,0,0.9), 0 0 60px rgba(255,0,0,0.4); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes noticeRedV4 { 0%,100% { border-left-color: #ff2222; } 50% { border-left-color: #ff0000; box-shadow: 0 0 24px rgba(255,0,0,0.6); } }
+@keyframes noticeFadeV4 { to { opacity: 0; transform: translateY(-10px) scale(0.9); } }
+#middleEarningNotice.notice-enter { animation: noticeEntryV4 0.6s cubic-bezier(0.34,1.56,0.64,1) forwards, noticeRedV4 0.45s ease 0.6s 3 !important; }
+#middleEarningNotice.notice-exit { animation: noticeFadeV4 0.45s ease forwards !important; opacity: 0 !important; pointer-events: none !important; }
+#middleEarningNotice.hidden-notice { display: none !important; opacity: 0 !important; }
+
+/* Disable when active */
+.premium-earn-btn.earning-active, #poroBtn.earning-active, #lijentBtn.earning-active { animation: none !important; opacity: 0.6 !important; }
+.premium-earn-btn.locked, #poroBtn.locked, #lijentBtn.locked { animation: none !important; opacity: 0.35 !important; }
+
+
+/* ===== Withdraw Payment Method - Premium Color Change + Tok Sound Glow ===== */
+.method-grid { gap: 10px !important; }
+.method {
+  position: relative !important;
+  transition: all 0.28s cubic-bezier(0.34,1.56,0.64,1) !important;
+  overflow: hidden !important;
+  border-width: 1.4px !important;
+}
+.method::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,0.12) 50%, transparent 80%);
+  transform: translateX(-100%);
+  transition: transform 0.6s ease;
+  pointer-events: none;
+}
+.method.selected::after {
+  transform: translateX(100%);
+}
+
+/* Selected - base glow */
+.method.selected {
+  transform: translateY(-2px) scale(1.03) !important;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.35), 0 0 18px var(--pm-glow) !important;
+  border-color: var(--pm-color) !important;
+  background: radial-gradient(circle at 50% 0%, var(--pm-bg), #15253b) !important;
+  color: #fff !important;
+}
+
+/* Bkash - Pink */
+.method.method-bkash { --pm-color: #e2136e; --pm-glow: rgba(226,19,110,0.6); --pm-bg: rgba(226,19,110,0.25); }
+.method.method-bkash.selected { background: linear-gradient(135deg, #e2136e, #a60e4e) !important; border-color: #ff2e89 !important; box-shadow: 0 0 18px rgba(226,19,110,0.8), 0 0 38px rgba(226,19,110,0.4) !important; animation: pmPulsePink 0.9s ease infinite !important; }
+@keyframes pmPulsePink { 0%,100% { box-shadow: 0 0 12px rgba(226,19,110,0.5); } 50% { box-shadow: 0 0 22px rgba(226,19,110,1), 0 0 45px rgba(226,19,110,0.5); } }
+
+/* Nagad - Orange Red */
+.method.method-nagad { --pm-color: #ff6a00; --pm-glow: rgba(255,106,0,0.6); --pm-bg: rgba(255,106,0,0.25); }
+.method.method-nagad.selected { background: linear-gradient(135deg, #ff6a00, #e53d00) !important; border-color: #ff8a2e !important; box-shadow: 0 0 18px rgba(255,106,0,0.8), 0 0 38px rgba(255,61,0,0.4) !important; animation: pmPulseOrange 0.9s ease infinite !important; }
+@keyframes pmPulseOrange { 0%,100% { box-shadow: 0 0 12px rgba(255,106,0,0.5); } 50% { box-shadow: 0 0 22px rgba(255,106,0,1), 0 0 45px rgba(255,61,0,0.5); } }
+
+/* Rocket - Purple */
+.method.method-rocket { --pm-color: #8a2be2; --pm-glow: rgba(138,43,226,0.6); --pm-bg: rgba(138,43,226,0.25); }
+.method.method-rocket.selected { background: linear-gradient(135deg, #8a2be2, #5d1a9e) !important; border-color: #a85cff !important; box-shadow: 0 0 18px rgba(138,43,226,0.8), 0 0 38px rgba(138,43,226,0.4) !important; animation: pmPulsePurple 0.9s ease infinite !important; }
+@keyframes pmPulsePurple { 0%,100% { box-shadow: 0 0 12px rgba(138,43,226,0.5); } 50% { box-shadow: 0 0 22px rgba(138,43,226,1), 0 0 45px rgba(138,43,226,0.5); } }
+
+/* Binance - Yellow */
+.method.method-binance { --pm-color: #f3ba2f; --pm-glow: rgba(243,186,47,0.6); --pm-bg: rgba(243,186,47,0.25); }
+.method.method-binance.selected { background: linear-gradient(135deg, #f3ba2f, #d8a01c) !important; color: #000 !important; font-weight: 900 !important; border-color: #ffdf6e !important; box-shadow: 0 0 18px rgba(243,186,47,0.9), 0 0 38px rgba(243,186,47,0.5) !important; animation: pmPulseYellow 0.9s ease infinite !important; }
+.method.method-binance.selected::after { background: linear-gradient(120deg, transparent 20%, rgba(255,255,255,0.35) 50%, transparent 80%); }
+@keyframes pmPulseYellow { 0%,100% { box-shadow: 0 0 12px rgba(243,186,47,0.5); } 50% { box-shadow: 0 0 22px rgba(243,186,47,1), 0 0 45px rgba(243,186,47,0.6); } }
+
+/* Mobile Recharge - Green */
+.method.method-recharge { --pm-color: #00c853; --pm-glow: rgba(0,200,83,0.6); --pm-bg: rgba(0,200,83,0.25); }
+.method.method-recharge.selected { background: linear-gradient(135deg, #00c853, #009624) !important; border-color: #2eff7a !important; box-shadow: 0 0 18px rgba(0,200,83,0.8), 0 0 38px rgba(0,200,83,0.4) !important; animation: pmPulseGreen 0.9s ease infinite !important; }
+@keyframes pmPulseGreen { 0%,100% { box-shadow: 0 0 12px rgba(0,200,83,0.5); } 50% { box-shadow: 0 0 22px rgba(0,200,83,1), 0 0 45px rgba(0,200,83,0.5); } }
+
+/* Wallet input placeholder glow */
+#account.wallet-glow, #amount.wallet-glow { border-color: var(--pm-color, #0bc6e8) !important; box-shadow: 0 0 12px var(--pm-glow, rgba(11,198,230,0.3)) !important; }
