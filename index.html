@@ -2,77 +2,85 @@
 <html lang="bn">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AdSpark SDK Test</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>Ad Test</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
-  body{margin:0;padding:20px;font-family:system-ui,sans-serif;background:#0b1626;color:#fff}
-  h2{margin:0 0 12px}
-  button{width:100%;padding:16px;font-size:17px;font-weight:800;border:0;border-radius:12px;color:#fff;background:linear-gradient(135deg,#12c9e7,#665cf4)}
-  button:disabled{opacity:.5}
-  #status{margin:14px 0;padding:12px;border-radius:10px;background:#12233a;font-size:14px;line-height:1.6}
-  #log{margin-top:14px;padding:12px;border-radius:10px;background:#050c16;font:12px/1.6 monospace;white-space:pre-wrap;min-height:120px}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,sans-serif;color:#fff;
+       background:radial-gradient(circle at 85% 10%,#103b59 0,transparent 30%),#071326;padding:20px}
+  .top{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+  .logo{width:42px;height:42px;border-radius:12px;display:grid;place-items:center;font-size:22px;
+        background:linear-gradient(135deg,#12c9e7,#665cf4)}
+  .top b{font-size:18px}.top small{display:block;color:#7f95b3;font-size:12px}
+  .card{background:linear-gradient(160deg,#10294a,#0a1a33);border:1px solid #25415f;border-radius:18px;padding:18px;margin-bottom:14px}
+  .label{font-size:12px;letter-spacing:1px;color:#7a8ca8;font-weight:700}
+  #status{margin-top:8px;font-size:15px;line-height:1.5}
+  .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+  .stat{background:#0e2038;border:1px solid #1d3048;border-radius:14px;padding:12px;text-align:center}
+  .stat b{display:block;font-size:24px;margin-top:4px}
+  #btn{width:100%;padding:18px;font-size:18px;font-weight:900;border:0;border-radius:16px;color:#fff;
+       background:linear-gradient(135deg,#12c9e7,#665cf4);box-shadow:0 0 22px rgba(18,201,231,.35)}
+  #btn:disabled{opacity:.45;box-shadow:none}
+  #log{margin-top:14px;padding:12px;border-radius:12px;background:#050c16;font:12px/1.6 monospace;
+       white-space:pre-wrap;min-height:110px;color:#b8c8dc}
 </style>
 </head>
 <body>
-<h2>AdSpark SDK Test</h2>
-<div id="status">SDK load hocche...</div>
-<button id="btn" disabled>Ad dekhao</button>
+<div class="top"><div class="logo">📢</div><div><b>Ad Test Bot</b><small>SDK কাজ করে কিনা দেখুন</small></div></div>
+
+<div class="card"><div class="label">SDK STATUS</div><div id="status">SDK load hocche...</div></div>
+
+<div class="stats">
+  <div class="stat"><div class="label">AD SUCCESS</div><b id="okCount">0</b></div>
+  <div class="stat"><div class="label">AD FAIL</div><b id="failCount">0</b></div>
+</div>
+
+<button id="btn" disabled>▶ Ad Dekhun</button>
 <div id="log"></div>
 
 <script>
   var SDK_URL = 'https://adspark-tma.top/api/public/sdk.js?k=34';
-  var statusEl = document.getElementById('status');
-  var btn = document.getElementById('btn');
-  var logEl = document.getElementById('log');
 
-  function log(m){ logEl.textContent += '[' + new Date().toLocaleTimeString() + '] ' + m + '\n'; }
+  var statusEl=document.getElementById('status'), btn=document.getElementById('btn'), logEl=document.getElementById('log');
+  var okEl=document.getElementById('okCount'), failEl=document.getElementById('failCount'), ok=0, fail=0;
+  function log(m){ logEl.textContent += '['+new Date().toLocaleTimeString()+'] '+m+'\n'; logEl.scrollTop=logEl.scrollHeight; }
   function getFn(){
-    if (typeof window.showAdspark === 'function') return {name:'showAdspark', fn:window.showAdspark};
-    if (typeof window.showAdsparkPopup === 'function') return {name:'showAdsparkPopup', fn:window.showAdsparkPopup};
+    if(typeof window.showAdspark==='function') return {name:'showAdspark',fn:window.showAdspark};
+    if(typeof window.showAdsparkPopup==='function') return {name:'showAdsparkPopup',fn:window.showAdsparkPopup};
     return null;
   }
+  try{ if(window.Telegram&&Telegram.WebApp){ Telegram.WebApp.ready(); Telegram.WebApp.expand(); } }catch(e){}
+  var uid=(window.Telegram&&Telegram.WebApp&&Telegram.WebApp.initDataUnsafe&&Telegram.WebApp.initDataUnsafe.user)?Telegram.WebApp.initDataUnsafe.user.id:null;
+  log('Telegram user id: '+(uid||'nai (browser e khola)'));
 
-  try { if (window.Telegram && Telegram.WebApp) { Telegram.WebApp.ready(); Telegram.WebApp.expand(); } } catch(e){}
-  var uid = (window.Telegram && Telegram.WebApp && Telegram.WebApp.initDataUnsafe && Telegram.WebApp.initDataUnsafe.user)
-            ? Telegram.WebApp.initDataUnsafe.user.id : null;
-  log('Telegram user id: ' + (uid || 'nai (browser e khola hoyeche)'));
-
-  var s = document.createElement('script');
-  s.src = SDK_URL;
-  s.async = true;
-  s.setAttribute('data-sdk', 'showAdspark');
-  s.onload = function(){
+  var s=document.createElement('script');
+  s.src=SDK_URL; s.async=true; s.setAttribute('data-sdk','showAdspark');
+  s.onload=function(){
     log('SDK file load hoyeche');
     setTimeout(function(){
-      var f = getFn();
-      if (f) {
-        statusEl.innerHTML = '✅ SDK ready. Function: <b>' + f.name + '</b>';
-        btn.disabled = false;
-      } else {
-        statusEl.innerHTML = '❌ SDK load hoyeche kintu ad function paoa jayni. (showAdspark / showAdsparkPopup nai)';
-      }
-    }, 800);
+      var f=getFn();
+      if(f){ statusEl.innerHTML='✅ SDK ready (<b>'+f.name+'</b>)'; btn.disabled=false; }
+      else{ statusEl.innerHTML='❌ SDK load hoyeche kintu ad function paoa jayni'; }
+    },800);
   };
-  s.onerror = function(){
-    statusEl.innerHTML = '❌ SDK load hoy nai (link ba network somossa)';
-    log('SDK load error');
-  };
+  s.onerror=function(){ statusEl.innerHTML='❌ SDK load hoy nai (link ba network somossa)'; log('SDK load error'); };
   document.head.appendChild(s);
 
-  btn.onclick = async function(){
-    var f = getFn();
-    if (!f) { log('Function nai'); return; }
-    btn.disabled = true;
-    log('Ad chalu korchi: ' + f.name);
-    var t0 = Date.now();
-    try {
-      var r = (f.name === 'showAdsparkPopup') ? await f.fn({ymid: uid}) : await f.fn();
-      log('✅ Ad sesh. Result: ' + JSON.stringify(r) + ' (' + ((Date.now()-t0)/1000).toFixed(1) + 's)');
-    } catch (e) {
-      log('❌ Ad error: ' + (e && e.message ? e.message : JSON.stringify(e)));
+  btn.onclick=async function(){
+    var f=getFn(); if(!f){ log('Function nai'); return; }
+    btn.disabled=true; btn.textContent='Ad chalu hocche...';
+    var t0=Date.now();
+    try{
+      var r=(f.name==='showAdsparkPopup')?await f.fn({ymid:uid}):await f.fn();
+      ok++; okEl.textContent=ok;
+      log('✅ Ad sesh. Result: '+JSON.stringify(r)+' ('+((Date.now()-t0)/1000).toFixed(1)+'s)');
+      if(Telegram&&Telegram.WebApp&&Telegram.WebApp.HapticFeedback) Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+    }catch(e){
+      fail++; failEl.textContent=fail;
+      log('❌ Ad error: '+(e&&e.message?e.message:JSON.stringify(e)));
     }
-    btn.disabled = false;
+    btn.disabled=false; btn.textContent='▶ Ad Dekhun';
   };
 </script>
 </body>
